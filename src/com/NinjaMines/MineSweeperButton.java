@@ -51,9 +51,12 @@ public class MineSweeperButton extends Button {
     }
 
     public void flagMine() {
-        flagged =!flagged;
-        if (flagged) this.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
-        else if(!flagged) this.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+        if(!toggled){
+            flagged =!flagged;
+            if (flagged) this.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+            else if(!flagged) this.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+        }
+
     }
     public boolean isFlagged(){
         return flagged;
