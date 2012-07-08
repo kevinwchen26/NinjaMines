@@ -8,11 +8,13 @@ import android.widget.Button;
 public class MineSweeperButton extends Button {
     private boolean isMine;
     private boolean toggled;
+    private boolean flagged;
 
     public MineSweeperButton(Context context) {
         super(context);
         isMine = false;
         toggled = false;
+        flagged =  false;
     }
 
     public boolean isMined() {
@@ -36,7 +38,6 @@ public class MineSweeperButton extends Button {
 
     public void clearMine() {
         isMine = false;
-        if (!this.isToggled()) this.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
         this.setText("");
 
     }
@@ -47,4 +48,15 @@ public class MineSweeperButton extends Button {
         this.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
         this.setText("");
     }
+
+    public void flagMine() {
+        flagged =!flagged;
+        if (flagged) this.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+        else if(!flagged) this.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+    }
+    public boolean isFlagged(){
+        return flagged;
+    }
+
+
 }
