@@ -45,6 +45,7 @@ public class MineSweeperButton extends Button {
     public void resetStatus() {
         isMine = false;
         toggled = false;
+        flagged=false;
         this.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
         this.setText("");
     }

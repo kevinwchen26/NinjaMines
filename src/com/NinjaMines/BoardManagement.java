@@ -18,22 +18,23 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
     private int numMines;
     private GameActivity parent;
     private int minesLeftToSet;
-    private int flagsLeft;
+    private int flaggedMines;
+    boolean flaggedWin;
 
     public BoardManagement(int numButtons, int numMines, GameActivity gameActivity) {
         this.numButtons = numButtons;
         this.numMines = numMines;
         this.parent = gameActivity;
         minesLeftToSet = numMines;
+        flaggedMines = 0;
     }
 
     private void layMines() {
-        while (minesLeftToSet>0) {
+        while (minesLeftToSet > 0) {
             int x = (int) (Math.random() * numButtons);
             int y = (int) (Math.random() * numButtons);
-            if (!buttons[x][y].isToggled() && !buttons[x][y].isMined()&&!buttons[x][y].isFlagged()) {//makes sure to not lay mine on toggled buttons
+            if (!buttons[x][y].isToggled() && !buttons[x][y].isMined() && !buttons[x][y].isFlagged()) {//makes sure to not lay mine on toggled buttons
                 buttons[x][y].mine();
-                buttons[x][y].getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                 minesLeftToSet--;
             }
         }
@@ -88,7 +89,7 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
     private void clearMines() {
         for (int i = 0; i < numButtons; i++) {
             for (int j = 0; j < numButtons; j++) {
-                if (!buttons[i][j].isFlagged()&&buttons[i][j].isMined()) {
+                if (!buttons[i][j].isFlagged() && buttons[i][j].isMined()) {
                     buttons[i][j].clearMine();
                     buttons[i][j].getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
                     minesLeftToSet++;
@@ -103,6 +104,8 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
             win = false;
             message = "You Win :( play again?";
         }
+        if (flaggedWin) message = "Wow you did flag everything right, wanna try again?";
+        flaggedWin=false;
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         builder.setMessage(message)
                 .setCancelable(false)
@@ -127,6 +130,8 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
             }
         }
         firstClick = true;
+        flaggedMines = 0;
+        minesLeftToSet=numMines;
     }
 
     public void drawBoard() {
@@ -154,15 +159,45 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
 
     @Override
     public boolean onLongClick(View view) {
-        if (!firstClick){
+        if (!firstClick) {
             MineSweeperButton button = (MineSweeperButton) view;
-            if (button.isFlagged()) flagsLeft++;
-            if (!button.isFlagged()) flagsLeft--;
+            if (button.isFlagged()) flaggedMines--;
+            if (!button.isFlagged()) flaggedMines++;
             button.flagMine();
+            if (flaggedMines == numMines) {
+                flaggedWin = true;
+                checkFlags();
+            }
             clearMines();
             layMines();
         }
         return true;
+
+    }
+
+    private void checkFlags() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(parent);
+        builder.setMessage("So you think you've flagged all the mines ehhh? Do you want to end the game now and check to see if you've flagged the right squares?")
+                .setCancelable(false)
+                .setPositiveButton("Yes, this game is too easy I'm 1000% sure I flagged all the mines", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        int numCorrect = 0;
+                        for (int i = 0; i < numButtons; i++) {
+                            for (int j = 0; j < numButtons; j++) {
+                                if (buttons[i][j].isFlagged() && buttons[i][j].isMined()) numCorrect++;
+                            }
+                        }
+                        if (numCorrect != numMines) flaggedWin = false;
+                        gameOver();
+                    }
+                })
+                .setNegativeButton("No, I was just playing around lemme keep on playing", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
 
     }
 
