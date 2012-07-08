@@ -1,25 +1,22 @@
 package com.NinjaMines;
 
 import android.app.Activity;
-
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
-import android.widget.TableRow.LayoutParams;
 
-import java.util.ArrayList;
 
 public class GameActivity extends Activity implements View.OnClickListener {
     private int numButtons = 0;
     private int difficulty;
     private int numMines;
     boolean firstClick = true;
+    private int numToggled = 0;
+    private boolean win = false;
 
     private MineSweeperButton[][] buttons;
 
@@ -46,7 +43,6 @@ public class GameActivity extends Activity implements View.OnClickListener {
 
     private void layMines() {
         int counter = 0;
-        MineSweeperButton button;
         while (counter < numMines) {
             int x = (int) (Math.random() * numButtons);
             int y = (int) (Math.random() * numButtons);
@@ -65,25 +61,39 @@ public class GameActivity extends Activity implements View.OnClickListener {
                 int surroundingMines = 0;
                 if (buttons[i][j].isToggled()) {
                     if (i - 1 >= 0) {
-                        if (j - 1 > 0) {
-                            if (buttons[i - 1][j].isMined()) surroundingMines++;
-                            if (buttons[i - 1][j - 1].isMined()) surroundingMines++;
-                            if (buttons[i][j - 1].isMined()) surroundingMines++;
+                        if (buttons[i - 1][j].isMined())
+                            surroundingMines++;
+
+                        if (j - 1 >= 0) {
+                            if (buttons[i - 1][j - 1].isMined())
+                                surroundingMines++;
+                            if (buttons[i][j - 1].isMined())
+                                surroundingMines++;
                         }
                         if (j + 1 < numMines) {
-                            if (buttons[i - 1][j + 1].isMined()) surroundingMines++;
-                            if (buttons[i][j + 1].isMined()) surroundingMines++;
+                            if (buttons[i - 1][j + 1].isMined())
+                                surroundingMines++;
                         }
                     }
 
                     if (i + 1 < numMines) {
-                        if (buttons[i + 1][j].isMined()) surroundingMines++;
-                        if (j - 1 > 0)
-                            if (buttons[i + 1][j - 1].isMined()) surroundingMines++;
-                        if (j + 1 < numMines)
-                            if (buttons[i + 1][j + 1].isMined()) surroundingMines++;
+                        if (buttons[i + 1][j].isMined())
+                            surroundingMines++;
+                        if (j - 1 >= 0) {
+                            if (buttons[i + 1][j - 1].isMined())
+                                surroundingMines++;
+
+                        }
+                        if (j + 1 < numMines) {
+                            if (buttons[i + 1][j + 1].isMined())
+                                surroundingMines++;
+                            if (buttons[i][j + 1].isMined())
+                                surroundingMines++;
+                        }
+
                     }
-                    if(surroundingMines>0)buttons[i][j].setText(surroundingMines + "");
+
+                    if (surroundingMines > 0) buttons[i][j].setText(surroundingMines + "");
                 }
             }
         }
@@ -116,15 +126,21 @@ public class GameActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         MineSweeperButton button = (MineSweeperButton) view;
         if (firstClick) {//wont lay mines until AFTER first click, so the user does not auto-lose
+            numToggled++;
             button.toggle();
             layMines();
             firstClick = false;
         } else {
-            boolean isMine = button.isMined();
-            if (isMine) gameOver();//if button is mined GG
+            if (button.isMined()) gameOver();//if button is mined GG
             else {
                 if (!button.isToggled()) {
+                    numToggled++;
                     button.toggle();
+                    if (numButtons * numButtons - numToggled == numMines) {
+                        win = true;
+                        numToggled=0;
+                        gameOver();
+                    }
                     clearMines();//clears the mined status of all buttons before replanting mines
                     layMines();
                 }
@@ -141,7 +157,35 @@ public class GameActivity extends Activity implements View.OnClickListener {
     }
 
     private void gameOver() {
+        String message = "You Lose :D play again??";
+        if (win) {
+            win=false;
+            message = "You Win :( play again?";
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        resetBoard();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
 
+    }
+
+    private void resetBoard() {
+        for (int i = 0; i < numButtons; i++) {
+            for (int j = 0; j < numButtons; j++) {
+                buttons[i][j].resetStatus();
+            }
+        }
+        firstClick = true;
     }
 
 
