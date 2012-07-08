@@ -12,8 +12,6 @@ import android.widget.LinearLayout;
 
 public class StartActivity extends Activity {
     private static int difficulty;
-
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
