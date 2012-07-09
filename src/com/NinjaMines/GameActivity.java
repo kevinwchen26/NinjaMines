@@ -2,17 +2,7 @@ package com.NinjaMines;
 //DONE get progress bar working, or make the object creation process faster //solution: used alert dialog instead of progress bar
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.gesture.Gesture;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.*;
-
 
 public class GameActivity extends Activity{
     private int numButtons = 0;

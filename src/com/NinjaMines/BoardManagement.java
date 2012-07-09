@@ -6,9 +6,9 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+
 
 import java.util.Random;
 //didn't use getter and setters to increase performance
@@ -17,7 +17,7 @@ import java.util.Random;
 //TODO get a separate view with a timer, and menu
 //Done fix mine counting   //problem using wrong variables -_-
 //DONE fix mines not moving after every click //problem ehcking wrong conditions in clearMines()
-//TODO win conditions broken :(
+//Done win conditions broken :( //forgot to add in the win reqs
 
 public class BoardManagement implements View.OnClickListener, View.OnLongClickListener {
     public MineSweeperButton[][] buttons;
@@ -82,6 +82,7 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
     private void clearMines() {
         for (int i = 0; i < numButtons; i++) {
             for (int j = 0; j < numButtons; j++) {
+                buttons[i][j].setText("");
                 if (!buttons[i][j].flagged && buttons[i][j].isMine) {
                     buttons[i][j].isMine = false;
                     buttons[i][j].setText("");
@@ -174,22 +175,27 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
         MineSweeperButton button = (MineSweeperButton) view;
         if (button.isMine) {
             button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+            numToggled=0;
             gameOver();//if button is mined GG
         }
         if (firstClick) {//wont lay mines until AFTER first click, so the user does not auto-lose
             numToggled++;
             if (!button.toggled) {
-                button.getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+                button.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
                 button.toggled = true;
             }
             layMines();
             firstClick = false;
         }
-
         if (!button.toggled) {
             numToggled++;
+            if(numButtons*numButtons-numToggled==numMines){
+                win=true;
+                numToggled=0;
+                gameOver();
+            }
             if (!button.toggled&&!button.isMine) {
-                button.getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+                button.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
                 button.toggled = true;
                 clearMines();//clears the mined status of all buttons before replanting mines
                 layMines();

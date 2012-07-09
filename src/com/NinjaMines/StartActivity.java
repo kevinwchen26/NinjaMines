@@ -2,15 +2,10 @@ package com.NinjaMines;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
+
 
 public class StartActivity extends Activity {
     private static int difficulty;
@@ -27,6 +22,7 @@ public class StartActivity extends Activity {
         AlertDialog alert = builder.create();
         alert.show();
         startActivity(intent);
+
     }
 
     public void optionsMenu(View view){
