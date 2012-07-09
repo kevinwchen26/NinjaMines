@@ -1,24 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
-    <Button
-            android:id="@+id/playGame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Play Game"
-            android:onClick="startGame"
-        />
+
     <Button
             android:id="@+id/options"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
             android:layout_weight="1"
             android:text="Options"
             android:onClick="optionsMenu"
-        />
-</LinearLayout>
+            android:layout_centerInParent="true"
+
+            />
+    <Button
+            android:id="@+id/playGame"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            android:layout_weight="1"
+            android:text="Play Game"
+            android:onClick="startGame"
+            android:layout_centerInParent="true"
+            android:layout_above="@id/options"
+            />
+    <Button
+            android:id="@+id/quit"
+            android:layout_height="100dip"
+            android:layout_width="100dip"
+            android:layout_weight="1"
+            android:text="Quit"
+            android:onClick="quit"
+            android:layout_centerInParent="true"
+            android:layout_below="@id/options"
+
+            />
+</RelativeLayout>
 

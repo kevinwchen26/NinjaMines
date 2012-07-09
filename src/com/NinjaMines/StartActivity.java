@@ -31,6 +31,9 @@ public class StartActivity extends Activity {
     public static int getDifficulty(){
         return difficulty;
     }
+    public void quit(View view){
+        this.finish();
+    }
 
 
 }

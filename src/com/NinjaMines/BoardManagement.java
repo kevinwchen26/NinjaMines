@@ -8,10 +8,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+
+import java.util.Random;
 //didn't use getter and setters to increase performance
+//TODO get the buttons to fill the screen
+//TODO get the images to display on the buttons
+//TODO get a separate view with a timer, and menu
 
 public class BoardManagement implements View.OnClickListener, View.OnLongClickListener {
-    private MineSweeperButton[][] buttons;
+    public MineSweeperButton[][] buttons;
     private boolean win = false;
     private int numToggled = 0;
     boolean firstClick = true;
@@ -19,6 +24,9 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
     private int numMines;
     private GameActivity parent;
     private int minesLeftToSet;
+    Random random = new Random();
+    int x, y;
+    int surroundingMines;
 
     public BoardManagement(int numButtons, int numMines, GameActivity gameActivity) {
         this.numButtons = numButtons;
@@ -29,10 +37,10 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
 
     private void layMines() {
         while (minesLeftToSet > 0) {
-            int x = (int) (Math.random() * numButtons);
-            int y = (int) (Math.random() * numButtons);
+            x = random.nextInt(numButtons);
+            y = random.nextInt(numButtons);
             if (!buttons[x][y].toggled && !buttons[x][y].isMine && !buttons[x][y].flagged) {//makes sure to not lay mine on toggled buttons
-                buttons[x][y].isMine=true;
+                buttons[x][y].isMine = true;
                 minesLeftToSet--;
             }
         }
@@ -42,52 +50,33 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
     private void updateNumbers() {
         for (int i = 0; i < numMines; i++) {
             for (int j = 0; j < numMines; j++) {
-                int surroundingMines = 0;
                 if (buttons[i][j].toggled) {
-                    if (i - 1 >= 0) {
-                        if (buttons[i - 1][j].isMine)
-                            surroundingMines++;
-                        if (j - 1 >= 0) {
-                            if (buttons[i - 1][j - 1].isMine)
-                                surroundingMines++;
-                            if (buttons[i][j - 1].isMine)
-                                surroundingMines++;
-                        }
-                        if (j + 1 < numMines) {
-                            if (buttons[i - 1][j + 1].isMine)
-                                surroundingMines++;
-                        }
-                    }
-
-                    if (i + 1 < numMines) {
-                        if (buttons[i + 1][j].isMine)
-                            surroundingMines++;
-                        if (j - 1 >= 0) {
-                            if (buttons[i + 1][j - 1].isMine)
-                                surroundingMines++;
-
-                        }
-                        if (j + 1 < numMines) {
-                            if (buttons[i + 1][j + 1].isMine)
-                                surroundingMines++;
-                            if (buttons[i][j + 1].isMine)
-                                surroundingMines++;
-                        }
-
-                    }
-
-                    if (surroundingMines > 0) buttons[i][j].setText(surroundingMines + "");
+                    surroundingMines = 0;
+                    surroundingMines += isMine(x + 1, y);//r
+                    surroundingMines += isMine(x - 1, y);//l
+                    surroundingMines += isMine(x, y + 1);//u
+                    surroundingMines += isMine(x, y - 1);//d
+                    surroundingMines += isMine(x + 1, y + 1);//ru
+                    surroundingMines += isMine(x - 1, y - 1);//ld
+                    surroundingMines += isMine(x + 1, y - 1);//rd
+                    surroundingMines += isMine(x - 1, y + 1);//lu
+                    buttons[x][y].setText(surroundingMines + "");
                 }
             }
         }
+    }
 
+    private int isMine(int x, int y) {
+        if (x < 0 || y < 0 || x >= numButtons || y >= numButtons) return 0;
+        if (buttons[x][y].isMine) return 1;
+        return 0;
     }
 
     private void clearMines() {
         for (int i = 0; i < numButtons; i++) {
             for (int j = 0; j < numButtons; j++) {
                 if (!buttons[i][j].flagged && buttons[i][j].flagged) {
-                    buttons[i][j].isMine=false;
+                    buttons[i][j].isMine = false;
                     buttons[i][j].setText("");
                     buttons[i][j].getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
                     minesLeftToSet++;
@@ -112,6 +101,7 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        parent.finish();
                     }
                 });
         AlertDialog alert = builder.create();
@@ -136,16 +126,16 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
     public void drawBoard() {
         MineSweeperButton button;
         LinearLayout layout = (LinearLayout) parent.findViewById(R.id.gamescreen);
-
         TableLayout table = new TableLayout(parent);
         table.setShrinkAllColumns(true);
         table.setStretchAllColumns(true);
         buttons = new MineSweeperButton[numButtons][numButtons];
+
         for (int i = 0; i < numButtons; i++) {
+
             TableRow row = new TableRow(parent);
             for (int j = 0; j < numButtons; j++) {
                 button = new MineSweeperButton(parent);
-                button.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
                 button.setOnClickListener(this);
                 button.setOnLongClickListener(this);
                 buttons[i][j] = button;
@@ -183,8 +173,10 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
             layMines();
             firstClick = false;
         } else {
-            if (button.isMine) gameOver();//if button is mined GG
-            else {
+            if (button.isMine) {
+                button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+                gameOver();//if button is mined GG
+            } else {
                 if (!button.toggled) {
                     numToggled++;
                     if (!button.toggled) {
