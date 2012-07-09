@@ -22,9 +22,9 @@ public final class R {
         public static final int gamescreen=0x7f050000;
         public static final int hard=0x7f050008;
         public static final int medium=0x7f050007;
-        public static final int options=0x7f050002;
+        public static final int options=0x7f050001;
         public static final int optionsscreen=0x7f050004;
-        public static final int playGame=0x7f050001;
+        public static final int playGame=0x7f050002;
         public static final int quit=0x7f050003;
         public static final int save=0x7f050009;
     }
