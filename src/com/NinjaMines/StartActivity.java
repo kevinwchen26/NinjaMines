@@ -1,6 +1,8 @@
 package com.NinjaMines;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -20,6 +22,10 @@ public class StartActivity extends Activity {
     }
     public void startGame(View view){
         Intent intent=new Intent(this, GameActivity.class);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Building...");
+        AlertDialog alert = builder.create();
+        alert.show();
         startActivity(intent);
     }
 

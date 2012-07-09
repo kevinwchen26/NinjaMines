@@ -1,4 +1,5 @@
 package com.NinjaMines;
+//DONE get progress bar working, or make the object creation process faster //solution: used alert dialog instead of progress bar
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,6 +22,7 @@ public class GameActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
+
         difficulty = StartActivity.getDifficulty();
         switch (difficulty) {
             case 0:
@@ -37,6 +39,7 @@ public class GameActivity extends Activity{
                 break;
         }
         BoardManagement manager=new BoardManagement(numButtons,numMines,this);
+
         manager.drawBoard();
     }
 
