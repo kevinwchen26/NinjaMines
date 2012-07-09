@@ -5,15 +5,17 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import java.util.Random;
 //didn't use getter and setters to increase performance
-//TODO get the buttons to fill the screen
+//DONE get the buttons to fill the screen //problem: had to set param for both buttons AND rows
 //TODO get the images to display on the buttons
 //TODO get a separate view with a timer, and menu
+//TODO fix mine counting
 
 public class BoardManagement implements View.OnClickListener, View.OnLongClickListener {
     public MineSweeperButton[][] buttons;
@@ -125,11 +127,18 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
 
     public void drawBoard() {
         MineSweeperButton button;
-        LinearLayout layout = (LinearLayout) parent.findViewById(R.id.gamescreen);
-        TableLayout table = new TableLayout(parent);
-        table.setShrinkAllColumns(true);
+        TableLayout table = (TableLayout) parent.findViewById(R.id.gamescreen);
+        //table.setShrinkAllColumns(true);
         table.setStretchAllColumns(true);
         buttons = new MineSweeperButton[numButtons][numButtons];
+        TableLayout.LayoutParams rowParam = new TableLayout.LayoutParams(
+                ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.FILL_PARENT,
+                1.0f);
+        TableRow.LayoutParams cellLParam = new TableRow.LayoutParams(
+                ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.FILL_PARENT,
+                1.0f);
 
         for (int i = 0; i < numButtons; i++) {
 
@@ -138,12 +147,12 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
                 button = new MineSweeperButton(parent);
                 button.setOnClickListener(this);
                 button.setOnLongClickListener(this);
+                button.setLayoutParams(cellLParam);
                 buttons[i][j] = button;
                 row.addView(button);
             }
-            table.addView(row);
+            table.addView(row,rowParam);
         }
-        layout.addView(table);
     }
 
     @Override
