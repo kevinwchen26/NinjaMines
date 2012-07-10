@@ -16,20 +16,19 @@ import java.util.Random;
 //TODO get the images to display on the buttons
 //TODO get a separate view with a timer, and menu
 //Done fix mine counting   //problem using wrong variables -_-
-//DONE fix mines not moving after every click //problem ehcking wrong conditions in clearMines()
+//DONE fix mines not moving after every click //problem checking wrong conditions in clearMines()
 //Done win conditions broken :( //forgot to add in the win reqs
 
-public class BoardManagement implements View.OnClickListener, View.OnLongClickListener {
-    public MineSweeperButton[][] buttons;
+class BoardManagement implements View.OnClickListener, View.OnLongClickListener {
+    private MineSweeperButton[][] buttons;
     private boolean win = false;
     private int numToggled = 0;
-    boolean firstClick = true;
+    private boolean firstClick = true;
     private int numButtons;
     private int numMines;
     private GameActivity parent;
     private int minesLeftToSet;
-    Random random = new Random();
-    int surroundingMines;
+    private Random random = new Random();
 
     public BoardManagement(int numButtons, int numMines, GameActivity gameActivity) {
         this.numButtons = numButtons;
@@ -55,7 +54,8 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
         for (int i = 0; i < numButtons; i++) {
             for (int j = 0; j < numButtons; j++) {
                 if (buttons[i][j].toggled) {
-                    surroundingMines = 0;
+
+                    int surroundingMines = 0;
                     surroundingMines += isMine(i + 1, j);//r
                     surroundingMines += isMine(i - 1, j);//l
                     surroundingMines += isMine(i, j + 1);//u
@@ -132,7 +132,6 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
     }
 
     public void drawBoard() {
-
         MineSweeperButton button;
         TableLayout table = (TableLayout) parent.findViewById(R.id.gamescreen);
         table.setShrinkAllColumns(true);
@@ -153,6 +152,7 @@ public class BoardManagement implements View.OnClickListener, View.OnLongClickLi
             }
             table.addView(row, rowParam);
         }
+        StartActivity.staller.dismiss();
     }
 
     @Override

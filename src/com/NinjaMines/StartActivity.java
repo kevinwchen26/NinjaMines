@@ -9,6 +9,8 @@ import android.view.View;
 
 public class StartActivity extends Activity {
     private static int difficulty;
+    public static AlertDialog.Builder stall;
+    public static AlertDialog staller;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -17,10 +19,10 @@ public class StartActivity extends Activity {
     }
     public void startGame(View view){
         Intent intent=new Intent(this, GameActivity.class);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Building...");
-        AlertDialog alert = builder.create();
-        alert.show();
+        stall = new AlertDialog.Builder(this);
+        stall.setMessage("Building...");
+        staller = stall.create();
+        staller.show();
         startActivity(intent);
 
     }

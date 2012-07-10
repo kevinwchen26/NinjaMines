@@ -11,7 +11,6 @@
             android:layout_weight="1"
             android:text="Play Game"
             android:onClick="startGame"
-            android:layout_centerInParent="true"
             />
 
     <Button
@@ -31,7 +30,6 @@
             android:layout_weight="1"
             android:text="Quit"
             android:onClick="quit"
-            android:layout_centerInParent="true"
 
 
             />

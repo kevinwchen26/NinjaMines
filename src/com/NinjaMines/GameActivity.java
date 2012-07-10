@@ -6,14 +6,13 @@ import android.os.Bundle;
 
 public class GameActivity extends Activity{
     private int numButtons = 0;
-    private int difficulty;
     private int numMines;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
 
-        difficulty = StartActivity.getDifficulty();
+        int difficulty = StartActivity.getDifficulty();
         switch (difficulty) {
             case 0:
                 numButtons = 3;
