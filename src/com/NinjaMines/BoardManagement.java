@@ -24,11 +24,11 @@ class BoardManagement implements View.OnClickListener, View.OnLongClickListener 
     private boolean win = false;
     private int numToggled = 0;
     private boolean firstClick = true;
-    private int numButtons;
-    private int numMines;
-    private GameActivity parent;
+    private final int numButtons;
+    private final int numMines;
+    private final GameActivity parent;
     private int minesLeftToSet;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public BoardManagement(int numButtons, int numMines, GameActivity gameActivity) {
         this.numButtons = numButtons;
@@ -43,7 +43,7 @@ class BoardManagement implements View.OnClickListener, View.OnLongClickListener 
             int y = random.nextInt(numButtons);
             if (!buttons[x][y].toggled && !buttons[x][y].isMine && !buttons[x][y].flagged) {//makes sure to not lay mine on toggled buttons
                 buttons[x][y].isMine = true;
-                buttons[x][y].getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+                //buttons[x][y].getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                 minesLeftToSet--;
             }
         }
@@ -64,7 +64,7 @@ class BoardManagement implements View.OnClickListener, View.OnLongClickListener 
                     surroundingMines += isMine(i - 1, j - 1);//ld
                     surroundingMines += isMine(i + 1, j - 1);//rd
                     surroundingMines += isMine(i - 1, j + 1);//lu
-                    if (surroundingMines != 0){
+                    if (surroundingMines != 0) {
                         buttons[i][j].setText(surroundingMines + "");
                         buttons[i][j].setTextColor(Color.BLACK);
                     }
@@ -133,12 +133,12 @@ class BoardManagement implements View.OnClickListener, View.OnLongClickListener 
 
     public void drawBoard() {
         MineSweeperButton button;
-        TableLayout table = (TableLayout) parent.findViewById(R.id.gamescreen);
+        TableLayout table = (TableLayout) parent.findViewById(R.id.gameScreen);
         table.setShrinkAllColumns(true);
         table.setStretchAllColumns(true);
         buttons = new MineSweeperButton[numButtons][numButtons];
-        TableLayout.LayoutParams rowParam = new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT,1.0f);
-        TableRow.LayoutParams cellLParam = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT,1.0f);
+        TableLayout.LayoutParams rowParam = new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
+        TableRow.LayoutParams cellLParam = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
         for (int i = 0; i < numButtons; i++) {
             TableRow row = new TableRow(parent);
             for (int j = 0; j < numButtons; j++) {
@@ -161,11 +161,15 @@ class BoardManagement implements View.OnClickListener, View.OnLongClickListener 
             MineSweeperButton button = (MineSweeperButton) view;
             if (!button.toggled) {
                 button.flagged = !button.flagged;
-                if (button.flagged) button.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
-                else if (!button.flagged) button.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+                if (button.flagged) {
+                    button.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);   //nf->f
+                    clearMines();
+                    layMines();
+                } else if (!button.flagged)
+                    button.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY); //f->nf
+
             }
-            clearMines();
-            layMines();
+
         }
         return true;
 
@@ -175,13 +179,13 @@ class BoardManagement implements View.OnClickListener, View.OnLongClickListener 
         MineSweeperButton button = (MineSweeperButton) view;
         if (button.isMine) {
             button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
-            numToggled=0;
+            numToggled = 0;
             gameOver();//if button is mined GG
         }
         if (firstClick) {//wont lay mines until AFTER first click, so the user does not auto-lose
             numToggled++;
             if (!button.toggled) {
-                button.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+                button.getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
                 button.toggled = true;
             }
             layMines();
@@ -189,13 +193,13 @@ class BoardManagement implements View.OnClickListener, View.OnLongClickListener 
         }
         if (!button.toggled) {
             numToggled++;
-            if(numButtons*numButtons-numToggled==numMines){
-                win=true;
-                numToggled=0;
+            if (numButtons * numButtons - numToggled == numMines) {
+                win = true;
+                numToggled = 0;
                 gameOver();
             }
-            if (!button.toggled&&!button.isMine) {
-                button.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+            if (!button.toggled && !button.isMine) {
+                button.getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
                 button.toggled = true;
                 clearMines();//clears the mined status of all buttons before replanting mines
                 layMines();

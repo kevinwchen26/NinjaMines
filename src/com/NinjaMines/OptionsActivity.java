@@ -13,7 +13,7 @@ public class OptionsActivity extends Activity{
         setContentView(R.layout.options);
     }
     public void saveSettings(View view){
-        RadioGroup group=(RadioGroup)findViewById(R.id.difficultysettings);
+        RadioGroup group=(RadioGroup)findViewById(R.id.difficultySettings);
         RadioButton radio;
         Intent intent=new Intent(this, StartActivity.class);
         for(int i=0;i<group.getChildCount();i++){

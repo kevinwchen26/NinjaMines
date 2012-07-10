@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.widget.Button;
 
-public class MineSweeperButton extends Button {
+class MineSweeperButton extends Button {
     public boolean isMine;
     public boolean toggled;
     public boolean flagged;
