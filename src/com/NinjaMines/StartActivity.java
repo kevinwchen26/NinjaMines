@@ -7,9 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 
 
+//TODO look through new API to things more efficient
 public class StartActivity extends Activity {
     private static int difficulty;
-    public static AlertDialog.Builder stall;
+    private static AlertDialog.Builder stall;
     public static AlertDialog staller;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

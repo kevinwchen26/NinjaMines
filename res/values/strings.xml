@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Ninja Mines</string>
+    <string name="play">Play Game</string>
+    <string name="quit">Quit</string>
+    <string name="options">Options</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="hard">Hard</string>
+    <string name="medium">Medium</string>
+    <string name="easy">Easy</string>
+    <string name="save">Save</string>
 </resources>
